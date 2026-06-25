@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Carrinho</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f5f6f8; color: #333; padding-top: 80px; }
+        
+        /* HUD Fixa Superior */
+        .hud-header { position: fixed; top: 0; left: 0; width: 100%; height: 70px; background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 1000; }
+        .logo { font-size: 22px; font-weight: bold; color: #1a73e8; text-decoration: none; }
+        .search-container { flex: 1; max-width: 500px; margin: 0 20px; position: relative; }
+        .search-input { width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 20px; background-color: #f1f3f4; outline: none; font-size: 14px; }
+        .nav-icons { display: flex; align-items: center; gap: 20px; }
+        .icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; text-decoration: none; color: #5f6368; position: relative; }
+        .cart-badge { position: absolute; top: -5px; right: -8px; background-color: #ea4335; color: white; font-size: 11px; padding: 2px 6px; border-radius: 50%; font-weight: bold; }
+
+        /* Container da página */
+        .carrinho-main { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+        .caixa-carrinho { background-color: #fff; border-radius: 12px; padding: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .caixa-carrinho h2 { font-size: 22px; margin-bottom: 20px; color: #202124; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        
+        /* Linhas da Tabela */
+        .item-linha { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #f1f3f4; }
+        .item-info-nome { font-weight: 500; color: #202124; }
+        .item-info-preco { font-weight: bold; color: #1a73e8; }
+        .vazio-msg { text-align: center; color: #5f6368; padding: 30px 0; font-style: italic; }
+
+        /* Bloco de Soma Total */
+        .total-box { margin-top: 25px; padding-top: 20px; border-top: 2px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .total-box h3 { font-size: 20px; color: #202124; }
+        .total-box .preco-final { font-size: 24px; font-weight: bold; color: #1a73e8; }
+        
+        .botoes-acoes { display: flex; gap: 15px; margin-top: 20px; justify-content: flex-end; }
+        .btn-limpar { background-color: #f1f3f4; color: #5f6368; border: none; padding: 12px 25px; border-radius: 50px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+        .btn-limpar:hover { background-color: #e8eaed; color: #202124; }
+        .btn-comprar { background-color: #1a73e8; color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-comprar:hover { background-color: #1557b0; }
+    </style>
+</head>
+<body>
+
+    <header class="hud-header">
+        <a href="index.html" class="logo">MinhaLoja</a>
+        <div class="search-container"><input type="text" class="search-input" placeholder="Pesquisar..."></div>
+        <nav class="nav-icons">
+            <a href="carrinho.html" class="icon-btn">🛒<span class="cart-badge" id="hudCartCount">0</span></a>
+            <button class="icon-btn" onclick="alert('Área de conta do usuário')">👤</button>
+            <button class="icon-btn" onclick="alert('Menu de opções adicionais')">⋮</button>
+        </nav>
+    </header>
+
+    <main class="carrinho-main">
+        <div class="caixa-carrinho">
+            <h2>Seu Carrinho de Compras</h2>
+            <div id="listaItens"></div>
+            
+            <div class="total-box">
+                <h3>Total Geral:</h3>
+                <span class="preco-final" id="precoTotal">R$ 0,00</span>
+            </div>
+
+            <div class="botoes-acoes">
+                <button class="btn-limpar" onclick="limparCarrinho()">Esvaziar</button>
+                <button class="btn-comprar" onclick="alert('Pedido fechado com sucesso!')">Fechar Pedido</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const produtosDB = {
+            "1": { nome: "Gadget Tecnológico Alpha", preco: 150.00 },
+            "2": { nome: "Fone de Ouvido Bass Pro", preco: 280.00 },
+            "3": { nome: "Relógio Minimalista Smart", preco: 420.00 },
+            "4": { nome: "Mochila Executiva Premium", preco: 199.90 }
+        };
+
+        function renderizarCarrinho() {
+            const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+            const container = document.getElementById("listaItens");
+            document.getElementById("hudCartCount").innerText = carrinho.length;
+            let somaTotal = 0;
+
+            if (carrinho.length === 0) {
+                container.innerHTML = `<p class="vazio-msg">Seu carrinho está vazio no momento.</p>`;
+                document.getElementById("precoTotal").innerText = "R$ 0,00";
+                return;
+            }
+
+            container.innerHTML = "";
+            carrinho.forEach(id => {
+                const item = produtosDB[id];
+                if (item) {
+                    somaTotal += item.preco;
+                    const div = document.createElement("div");
+                    div.className = "item-linha";
+                    div.innerHTML = `
+                        <span class="item-info-nome">${item.nome}</span>
+                        <span class="item-info-preco">R$ ${item.preco.toFixed(2).replace('.', ',')}</span>
+                    `;
+                    container.appendChild(div);
+                }
+            });
+
+            document.getElementById("precoTotal").innerText = `R$ ${somaTotal.toFixed(2).replace('.', ',')}`;
+        }
+
+        function limparCarrinho() {
+            localStorage.removeItem("carrinho");
+            renderizarCarrinho();
+        }
+
+        document.addEventListener("DOMContentLoaded", renderizarCarrinho);
+    </script>
+</body>
+</html>

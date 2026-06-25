@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Loja - Início</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f5f6f8; color: #333; padding-top: 80px; }
+        
+        /* HUD Fixa Superior */
+        .hud-header { position: fixed; top: 0; left: 0; width: 100%; height: 70px; background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 1000; }
+        .logo { font-size: 22px; font-weight: bold; color: #1a73e8; text-decoration: none; }
+        .search-container { flex: 1; max-width: 500px; margin: 0 20px; position: relative; }
+        .search-input { width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 20px; background-color: #f1f3f4; outline: none; font-size: 14px; }
+        .search-input:focus { border-color: #1a73e8; background-color: #fff; }
+        .nav-icons { display: flex; align-items: center; gap: 20px; }
+        .icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; text-decoration: none; color: #5f6368; position: relative; transition: color 0.2s; }
+        .icon-btn:hover { color: #1a73e8; }
+        .cart-badge { position: absolute; top: -5px; right: -8px; background-color: #ea4335; color: white; font-size: 11px; padding: 2px 6px; border-radius: 50%; font-weight: bold; }
+        
+        /* Grid da Vitrine */
+        .vitrine-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .grid-produtos { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; }
+        .produto-card { background-color: #fff; border-radius: 8px; padding: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; }
+        .produto-card:hover { transform: translateY(-5px); }
+        .produto-card img { max-width: 100%; height: 180px; object-fit: contain; margin-bottom: 15px; border-radius: 4px; }
+        .produto-card h3 { font-size: 16px; margin-bottom: 8px; color: #202124; }
+        .produto-card .preco { font-size: 18px; font-weight: bold; color: #1a73e8; margin-bottom: 15px; }
+        .btn-ver { display: inline-block; background-color: #1a73e8; color: white; text-decoration: none; padding: 10px; border-radius: 50px; font-weight: 500; font-size: 14px; transition: background 0.2s; }
+        .btn-ver:hover { background-color: #1557b0; }
+    </style>
+</head>
+<body>
+
+    <header class="hud-header">
+        <a href="index.html" class="logo">MinhaLoja</a>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Pesquisar produtos...">
+        </div>
+        <nav class="nav-icons">
+            <a href="carrinho.html" class="icon-btn" title="Carrinho">🛒<span class="cart-badge" id="hudCartCount">0</span></a>
+            <button class="icon-btn" title="Minha Conta" onclick="alert('Área de conta do usuário')">👤</button>
+            <button class="icon-btn" title="Mais opções" onclick="alert('Menu de opções adicionais')">⋮</button>
+        </nav>
+    </header>
+
+    <main class="vitrine-container">
+        <div class="grid-produtos">
+            <div class="produto-card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPAlsGGaKyaeCE1W-udNTC73yhj8AnjY7eTMOuLagtZw&s=10" alt="Produto 1">
+                <h3>Alexa</h3>
+                <p class="preco">R$ 150,00</p>
+                <a href="produto.html?id=1" class="btn-ver">Ver Detalhes</a>
+            </div>
+            <div class="produto-card">
+                <img src="data:image/jpeg;base64,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" alt="Produto 2">
+                <h3>Fone de Ouvido Bass Pro</h3>
+                <p class="preco">R$ 280,00</p>
+                <a href="produto.html?id=2" class="btn-ver">Ver Detalhes</a>
+            </div>
+            <div class="produto-card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhxbM3mf4fXwHM8vyL1yQBMz2dUGSk0MRIVhrRBELrNw&s=10" alt="Produto 3">
+                <h3>Relógio Minimalista Smart</h3>
+                <p class="preco">R$ 420,00</p>
+                <a href="produto.html?id=3" class="btn-ver">Ver Detalhes</a>
+            </div>
+            <div class="produto-card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-mc2bRsFrRSftAcwd4eAlOf_hiQrz1Cm0BtJSMNsDTQ&s=10" alt="Produto 4">
+                <h3>Mochila Executiva Premium</h3>
+                <p class="preco">R$ 199,90</p>
+                <a href="produto.html?id=4" class="btn-ver">Ver Detalhes</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function atualizarBadge() {
+            const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+            document.getElementById("hudCartCount").innerText = carrinho.length;
+        }
+        document.addEventListener("DOMContentLoaded", atualizarBadge);
+    </script>
+</body>
+</html>
